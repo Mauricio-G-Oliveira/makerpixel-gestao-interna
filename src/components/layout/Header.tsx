@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar, onResetData }) =>
             📍 Tubarão / SC
           </span>
           <span className="text-xs text-slate-500 dark:text-slate-400">
-            Sistemas para Escritórios Contábeis
+            Gestão Interna • Software: <strong>MakerPixel Contábil</strong>
           </span>
         </div>
       </div>

@@ -31,7 +31,7 @@ export const MakerPixelLogo: React.FC<LogoProps> = ({ className = '', collapsed 
             <span className="text-maker-primary ml-0.5">Pixel</span>
           </div>
           <span className="text-[10px] font-semibold tracking-wider uppercase text-slate-400 dark:text-slate-400">
-            Gestão Contábil
+            Gestão Interna
           </span>
         </div>
       )}

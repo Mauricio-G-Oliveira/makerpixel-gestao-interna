@@ -92,10 +92,10 @@ export const SuportePage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <HeadphonesIcon className="w-6 h-6 text-maker-primary" /> Suporte Técnico ao Cliente
+            <HeadphonesIcon className="w-6 h-6 text-maker-primary" /> Suporte Técnico • MakerPixel Contábil
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Controle de chamados com prazos de SLA (Alta 4h, Normal 24h, Baixa 48h) restrito a clientes com contrato ativo.
+            Atendimento técnico e controle de SLA aos escritórios parceiros do <strong>MakerPixel Contábil</strong> (Alta 4h, Normal 24h, Baixa 48h).
           </p>
         </div>
 

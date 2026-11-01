@@ -1,11 +1,20 @@
-# MakerPixel Gestão 💼🚀
-> Sistema Integrado de Gestão Empresarial para a **MakerPixel** (Tubarão/SC), especializada em ferramentas e automações para escritórios de contabilidade (Integração SCI Único, Conciliação Bancária Inteligente, Robô de Conferências Fiscais, Controle de Vencimentos e Entregas por Setor).
+# MakerPixel Gestão Interna 💼🏢
+> Sistema Integrado de Gestão Empresarial, Operacional e Societária da **MakerPixel** (Tubarão/SC).
 
-[![Deploy to GitHub Pages](https://github.com/actions/workflows/deploy.yml/badge.svg)](https://github.com/)
-[![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Vite](https://img.shields.io/badge/Vite-6.0-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+---
+
+## 📌 Contexto dos Nomes dos Sistemas
+
+A MakerPixel possui dois projetos essenciais com papéis distintos:
+
+1. **MakerPixel Gestão Interna (Este Sistema):**
+   - O ERP e backoffice interno de controle da empresa.
+   - Usado pelos **dois sócios (50% / 50%)** e colaboradores.
+   - Gerencia: clientes e leads, prospecção, contratos, faturamento, despesas, fechamento do mês em regime de caixa, **distribuição de lucros com dupla aprovação**, implantações, treinamentos com certificados e suporte técnico.
+
+2. **MakerPixel Contábil (O Produto Comercial Principal):**
+   - O software e suíte de automações que a MakerPixel **vende para escritórios de contabilidade**.
+   - Módulos comercializados: *Conciliação Bancária Automática, Integração Direta com SCI Único, Controle de Vencimentos & Obrigações, Gestão de Entregas por Setor e Robô de Conferências Fiscais*.
 
 ---
 
@@ -22,24 +31,24 @@
 
 ---
 
-## 📦 Módulos Implementados
+## 📦 Módulos da Gestão Interna
 
 ### 1. Início (Dashboard Geral)
-- **KPIs em Tempo Real:** MRR (Receita Recorrente Mensal), Receita do Mês em Regime de Caixa, Total a Receber (com destaque em vermelho para vencidas) e Lucro Líquido do Mês.
+- **KPIs em Tempo Real:** MRR das assinaturas do *MakerPixel Contábil*, Receita do Mês em Regime de Caixa, Total a Receber (com destaque em vermelho para vencidas) e Lucro Líquido do Mês.
 - **Evolução Financeira:** Gráfico comparativo de Receitas vs Despesas dos últimos 6 meses.
 - **Distribuição de Lucros:** Widget em tempo real com retenção de reserva estatutária (20%), divisão com o método do maior resto e status da **Aprovação Dupla**.
-- **Listas Acionáveis:** Faturas a vencer com botão de cobrança rápida via WhatsApp, contratos em mês de aniversário para reajuste IPCA, fila da semana de prospecção e alerta do **Fator R** (< 28%).
+- **Listas Acionáveis:** Faturas a vencer com cobrança rápida via WhatsApp, contratos em mês de aniversário para reajuste IPCA, fila da semana de prospecção e alerta do **Fator R** (< 28%).
 
 ### 2. Clientes & Escritórios Contábeis
 - Cadastro completo de dados fiscais (CNPJ/CPF único com algoritmo real de validação dos dígitos verificadores).
-- **Botão "Buscar na Receita":** Integração com **BrasilAPI** que preenche exclusivamente os campos vazios e emite alerta caso a situação cadastral não esteja ATIVA.
+- **Botão "Buscar na Receita":** Consulta via **BrasilAPI** que preenche exclusivamente os campos vazios e emite alerta caso a situação cadastral não esteja ATIVA.
 - Histórico de interações por múltiplos canais (WhatsApp, E-mail, Reunião, Telefone).
 - Transição automática: `LEAD` ➔ `PROPOSTA` ➔ `CLIENTE` (ao ativar contrato) ➔ `EX_CLIENTE` (ao encerrar contratos).
 
-### 3. Prospecção & Funil de Vendas (10 Leads por Semana)
+### 3. Prospecção & Funil de Vendas (MakerPixel Contábil)
 - **Fila da Semana:** Seleção de até 10 leads priorizados automaticamente (1º mesma região - Tubarão/SC, 2º nunca contatados, 3º mais antigos).
 - **Cadência Inteligente:**
-  - 1ª abordagem;
+  - 1ª abordagem do *MakerPixel Contábil*;
   - Lembrete amigável após 3 dias sem resposta;
   - Quarentena de 90 dias após 7 dias do lembrete sem retorno.
 - **Lista de Exclusão (`SAIU_DA_LISTA`):** Bloqueio permanente por documento e telefone para leads que solicitaram cancelamento.
@@ -47,7 +56,7 @@
 - **Placar Semanal:** Contatados, respostas, demonstrações agendadas e taxa de conversão.
 
 ### 4. Contratos de Serviços & Módulos
-- Módulos comercializados: Conciliação Bancária, Integração SCI Único, Controle de Vencimentos, Entregas por Setor e Conferências Fiscais.
+- Módulos comercializados do *MakerPixel Contábil*: Conciliação Bancária, Integração SCI Único, Controle de Vencimentos, Entregas por Setor e Conferências Fiscais.
 - Cálculo automático de valor total (soma dos módulos − desconto concedido).
 - **Reajuste Anual no Mês de Aniversário:** Modal com simulação comparativa entre valor anterior, percentual de reajuste (ex: IPCA 4.8%) e novo valor reajustado com histórico permanente.
 - Regra de suspensão automática sugerida caso haja faturas em aberto há mais de 30 dias.
@@ -68,10 +77,10 @@
 - **Alerta Fiscal:** Notificação visual em caso de retirada superior a R$ 50.000,00 no mês (retenção de 10% de IRRF).
 - **Relatório para Ata de Aprovação de Contas:** Demonstrativo anual formatado para impressão e arquivo societário.
 
-### 7. Implantações (Projetos SCI Único)
-- 5 etapas sequenciais padronizadas:
+### 7. Implantações (Projetos MakerPixel Contábil)
+- 5 etapas sequenciais padronizadas de implantação:
   1. *Kickoff*
-  2. *Recebimento dos Dados e Leiautes*
+  2. *Recebimento dos Dados e Leiautes SCI*
   3. *Configuração dos Robôs e De/Para*
   4. *Treinamento da Equipe Contábil*
   5. *Acompanhamento de 30 Dias (Go-Live)*
@@ -79,8 +88,8 @@
 - Apontamento de horas dedicadas por sócio e cálculo de rentabilidade por hora.
 
 ### 8. Treinamentos & Emissão de Certificados
-- Controle de turmas (online ou presenciais).
-- Registro de frequência dos alunos.
+- Controle de turmas de capacitação do *MakerPixel Contábil*.
+- Registro de frequência dos participantes.
 - **Emissão de Certificado Oficial MakerPixel:** Liberado exclusivamente para participantes com **75% ou mais de presença**, com layout institucional e código de validação.
 
 ### 9. Suporte Técnico & Gestão de SLA
@@ -101,33 +110,6 @@
 - **Ícones:** Lucide React
 - **Roteamento:** React Router (HashRouter para compatibilidade nativa com GitHub Pages)
 - **Persistência:** LocalStorage com suporte a reset de dados de demonstração
-
----
-
-## 🚀 Como Executar Localmente
-
-```bash
-# Clone o repositório
-git clone https://github.com/<seu-usuario>/makerpixelgestao.git
-
-# Acesse o diretório
-cd makerpixelgestao
-
-# Instale as dependências
-npm install
-
-# Inicie o servidor de desenvolvimento
-npm run dev
-
-# Para gerar o build de produção (GitHub Pages)
-npm run build
-```
-
----
-
-## 🌐 Publicação no GitHub Pages (Git Flow)
-
-Este repositório está configurado com **GitHub Actions** (`.github/workflows/deploy.yml`) para compilar e publicar automaticamente no **GitHub Pages** a cada push nas branches `main` e `develop`.
 
 ---
 

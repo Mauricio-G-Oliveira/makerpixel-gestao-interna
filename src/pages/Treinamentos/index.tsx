@@ -51,7 +51,7 @@ export const TreinamentosPage: React.FC = () => {
             <GraduationCap className="w-6 h-6 text-maker-primary" /> Treinamentos & Certificados Oficiais
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Gestão de turmas de capacitação técnica do SCI Único e emissão de certificados oficiais para alunos com 75% ou mais de presença.
+            Capacitação técnica do software <strong>MakerPixel Contábil</strong> & integração SCI Único com emissão de certificados oficiais (&ge; 75% presença).
           </p>
         </div>
 

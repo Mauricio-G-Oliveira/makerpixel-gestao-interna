@@ -45,7 +45,7 @@ export const Layout: React.FC = () => {
 
         {/* Rodapé institucional */}
         <footer className="py-4 px-6 border-t border-maker-border dark:border-maker-darkBorder text-center text-xs text-slate-400">
-          MakerPixel Gestão &copy; {new Date().getFullYear()} • Soluções Inteligentes para Contabilidade • Tubarão/SC
+          MakerPixel Gestão Interna &copy; {new Date().getFullYear()} • Sistema Operacional e Societário • Software Comercial: MakerPixel Contábil
         </footer>
       </div>
     </div>

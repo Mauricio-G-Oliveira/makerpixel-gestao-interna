@@ -142,7 +142,7 @@ export const DashboardPage: React.FC = () => {
             </Badge>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Visão consolidada da MakerPixel. Todas as operações contábeis e financeiras sob controle.
+            Painel de Gestão Interna da MakerPixel. Controle de operações, financeiro dos sócios e clientes do software <strong>MakerPixel Contábil</strong>.
           </p>
         </div>
 

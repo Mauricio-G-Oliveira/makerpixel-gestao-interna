@@ -44,16 +44,16 @@ export const ProspeccaoPage: React.FC = () => {
   // Modelos pré-configurados
   const modelosMensagem = {
     apresentacao: {
-      titulo: '1ª Abordagem - Integração SCI e Conciliação',
-      corpo: 'Olá {nome}, tudo bem? Me chamo {autor} da MakerPixel aqui de Tubarão/SC. Desenvolvemos automações específicas para escritórios de contabilidade que utilizam o sistema SCI Único (como a conciliação bancária 100% automática e conferências fiscais com inteligência). Gostaria de saber se vocês da {empresa} em {cidade} teriam 10 minutinhos nesta semana para conhecer como os escritórios da região estão economizando mais de 20 horas semanais por analista?',
+      titulo: '1ª Abordagem - MakerPixel Contábil para SCI',
+      corpo: 'Olá {nome}, tudo bem? Me chamo {autor} da MakerPixel aqui de Tubarão/SC. Desenvolvemos o software MakerPixel Contábil, especializado em escritórios de contabilidade que utilizam o sistema SCI Único (com conciliação bancária 100% automática, controle de vencimentos e conferências fiscais inteligentes). Gostaria de saber se vocês da {empresa} em {cidade} teriam 10 minutinhos nesta semana para conhecer como os escritórios da região estão economizando mais de 20 horas semanais por analista?',
     },
     lembrete: {
       titulo: 'Lembrete Amigável (após 3 dias sem resposta)',
-      corpo: 'Olá {nome}, tudo bem? Passando apenas para saber se você conseguiu dar uma olhada na mensagem anterior sobre a automação contábil para o SCI na {empresa}. Temos casos práticos de escritórios em {cidade} com ótimos resultados.',
+      corpo: 'Olá {nome}, tudo bem? Passando apenas para saber se você conseguiu dar uma olhada na mensagem anterior sobre a automação do software MakerPixel Contábil para o SCI na {empresa}. Temos casos práticos de escritórios em {cidade} com ótimos resultados.',
     },
     demonstracao: {
       titulo: 'Convite para Demonstração Prática',
-      corpo: 'Olá {nome}! Que ótimo conversar contigo. Podemos agendar uma rápida demonstração online de 15 minutos para eu mostrar a tela do robô integrador funcionando com o SCI Único na prática para a equipe da {empresa}?',
+      corpo: 'Olá {nome}! Que ótimo conversar contigo. Podemos agendar uma rápida demonstração online de 15 minutos para eu mostrar a tela do MakerPixel Contábil funcionando com o SCI Único na prática para a equipe da {empresa}?',
     },
   };
 

@@ -54,10 +54,10 @@ export const ProjetosPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Kanban className="w-6 h-6 text-maker-primary" /> Projetos de Implantação SCI Único
+            <Kanban className="w-6 h-6 text-maker-primary" /> Implantação MakerPixel Contábil
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Controle das 5 etapas sequenciais obrigatórias, apontamento de horas por sócio e faturamento por entrega.
+            Controle das 5 etapas sequenciais de implantação do software <strong>MakerPixel Contábil</strong>, horas por sócio e faturamento por entrega.
           </p>
         </div>
 
