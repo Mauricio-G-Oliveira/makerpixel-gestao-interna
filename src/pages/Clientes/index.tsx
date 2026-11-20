@@ -15,10 +15,12 @@ import {
   Send,
   AlertCircle,
   ExternalLink,
+  Download,
 } from 'lucide-react';
 import { Badge, BadgeVariant } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
 import { ClienteFormModal } from './ClienteFormModal';
+import { ExportadorContatosModal } from '../../components/common/ExportadorContatosModal';
 import { useAppData } from '../../store/storage';
 import { useAuth } from '../../store/authContext';
 import { Cliente, SituacaoCliente } from '../../types';
@@ -26,13 +28,20 @@ import { formatarDocumento, formatarTelefone, formatarData } from '../../lib/uti
 
 export const ClientesPage: React.FC = () => {
   const { usuario } = useAuth();
-  const { clientes, contratos, salvarCliente, adicionarInteracaoCliente } = useAppData();
+  const {
+    clientes,
+    contratos,
+    salvarCliente,
+    adicionarInteracaoCliente,
+    importarContatosEmMassa,
+  } = useAppData();
 
   const [busca, setBusca] = useState('');
   const [filtroSituacao, setFiltroSituacao] = useState<string>('TODAS');
   const [clienteSelecionado, setClienteSelecionado] = useState<Cliente | null>(null);
   const [modalNovoAberto, setModalNovoAberto] = useState(false);
   const [clienteParaEditar, setClienteParaEditar] = useState<Cliente | null>(null);
+  const [modalExportadorAberto, setModalExportadorAberto] = useState(false);
 
   // Modal de Nova Interação
   const [modalInteracaoAberto, setModalInteracaoAberto] = useState(false);
@@ -107,15 +116,25 @@ export const ClientesPage: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            setClienteParaEditar(null);
-            setModalNovoAberto(true);
-          }}
-          className="min-h-[44px] px-5 py-2.5 bg-maker-primary hover:bg-maker-primaryHover text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-maker-primary/20 flex items-center justify-center gap-2 self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" /> Novo Cliente / Lead
-        </button>
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
+          <button
+            onClick={() => setModalExportadorAberto(true)}
+            className="min-h-[44px] px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm"
+            title="Abrir Central de Exportação de Contatos em Massa (CSV, WhatsApp, vCard, JSON)"
+          >
+            <Download className="w-4 h-4 text-maker-primary" /> Exportador em Massa
+          </button>
+
+          <button
+            onClick={() => {
+              setClienteParaEditar(null);
+              setModalNovoAberto(true);
+            }}
+            className="min-h-[44px] px-5 py-2.5 bg-maker-primary hover:bg-maker-primaryHover text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-maker-primary/20 flex items-center justify-center gap-2"
+          >
+            <Plus className="w-4 h-4" /> Novo Cliente / Lead
+          </button>
+        </div>
       </div>
 
       {/* Barra de Filtros e Busca */}
@@ -427,6 +446,13 @@ export const ClientesPage: React.FC = () => {
           </div>
         </form>
       </Modal>
+
+      {/* MODAL EXPORTADOR & GERENCIADOR DE CONTATOS EM MASSA */}
+      <ExportadorContatosModal
+        isOpen={modalExportadorAberto}
+        onClose={() => setModalExportadorAberto(false)}
+        onImportarNovos={importarContatosEmMassa}
+      />
     </div>
   );
 };

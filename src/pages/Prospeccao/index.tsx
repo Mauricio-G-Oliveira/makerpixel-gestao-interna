@@ -11,16 +11,18 @@ import {
   ChevronRight,
   Flame,
   Award,
-  Sparkles,
   Ban,
   Check,
+  Download,
 } from 'lucide-react';
 import { Badge } from '../../components/common/Badge';
 import { Modal } from '../../components/common/Modal';
+import { ExportadorContatosModal } from '../../components/common/ExportadorContatosModal';
 import { useAppData } from '../../store/storage';
 import { useAuth } from '../../store/authContext';
 import { LeadProspeccao, EtapaLead, Cliente } from '../../types';
 import { formatarTelefone, formatarData } from '../../lib/utils';
+import { CONTATOS_TUBARAO_RAW } from '../../store/contatosTubarao';
 
 export const ProspeccaoPage: React.FC = () => {
   const { usuario } = useAuth();
@@ -30,12 +32,14 @@ export const ProspeccaoPage: React.FC = () => {
     parametros,
     moverEtapaLead,
     registrarEnvioProspeccao,
+    importarContatosEmMassa,
   } = useAppData();
 
   const [leadModal, setLeadModal] = useState<LeadProspeccao | null>(null);
   const [modalPerdaAberto, setModalPerdaAberto] = useState(false);
   const [motivoPerda, setMotivoPerda] = useState('');
   const [tipoPerda, setTipoPerda] = useState<'PERDIDO' | 'SAIU_DA_LISTA'>('PERDIDO');
+  const [modalExportadorAberto, setModalExportadorAberto] = useState(false);
 
   // Modelos de Mensagem com Variáveis
   const [modeloSelecionado, setModeloSelecionado] = useState<'apresentacao' | 'lembrete' | 'demonstracao'>('apresentacao');
@@ -161,8 +165,18 @@ export const ProspeccaoPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Placar Semanal */}
-        <div className="flex items-center gap-3 bg-white dark:bg-maker-darkCard border border-maker-border dark:border-maker-darkBorder rounded-[12px] p-3 shadow-sm self-start">
+        <div className="flex flex-wrap items-center gap-3 self-start lg:self-auto">
+          {/* Botão de Exportador em Massa */}
+          <button
+            onClick={() => setModalExportadorAberto(true)}
+            className="min-h-[44px] px-4 py-2.5 rounded-xl bg-maker-primary hover:bg-maker-primaryHover text-white text-xs font-bold shadow-md shadow-maker-primary/20 flex items-center gap-2 transition-colors"
+            title="Abrir Central de Exportação e Importação em Massa (CSV, WhatsApp, vCard, JSON)"
+          >
+            <Download className="w-4 h-4" /> Exportador em Massa ({CONTATOS_TUBARAO_RAW.length} Escritórios)
+          </button>
+
+          {/* Placar Semanal */}
+          <div className="flex items-center gap-3 bg-white dark:bg-maker-darkCard border border-maker-border dark:border-maker-darkBorder rounded-[12px] p-3 shadow-sm">
           <div className="px-3 border-r border-slate-200 dark:border-slate-700 text-center">
             <span className="text-[10px] uppercase font-bold text-slate-400 block">Contatados</span>
             <span className="text-base font-extrabold text-slate-900 dark:text-white">
@@ -181,11 +195,12 @@ export const ProspeccaoPage: React.FC = () => {
               {totalDemonstracoes}
             </span>
           </div>
-          <div className="px-3 text-center">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block">Taxa Resposta</span>
-            <span className="text-base font-extrabold text-maker-success">
-              {taxaResposta}%
-            </span>
+            <div className="px-3 text-center">
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">Taxa Resposta</span>
+              <span className="text-base font-extrabold text-maker-success">
+                {taxaResposta}%
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -504,6 +519,13 @@ export const ProspeccaoPage: React.FC = () => {
           </div>
         </div>
       </Modal>
+
+      {/* MODAL EXPORTADOR & GERENCIADOR DE CONTATOS EM MASSA */}
+      <ExportadorContatosModal
+        isOpen={modalExportadorAberto}
+        onClose={() => setModalExportadorAberto(false)}
+        onImportarNovos={importarContatosEmMassa}
+      />
     </div>
   );
 };

@@ -14,6 +14,7 @@ import {
   LeadProspeccao,
   ModuloContratado,
 } from '../types';
+import { CLIENTES_TUBARAO, LEADS_TUBARAO } from './contatosTubarao';
 
 export const MODULOS_DISPONIVEIS: ModuloContratado[] = [
   { id: 'mod-1', nome: 'Conciliação Bancária Automática', preco: 250 },
@@ -26,21 +27,12 @@ export const MODULOS_DISPONIVEIS: ModuloContratado[] = [
 export const SOCIOS_INICIAIS: Socio[] = [
   {
     id: 'socio-1',
-    nome: 'Maurício (Você)',
+    nome: 'Maurício G. Oliveira',
     email: 'mauricio@makerpixel.com.br',
-    participacao: 50,
+    participacao: 100, // Titular Único - 100% das Quotas
     vigenciaInicio: '2024-01',
     chavePix: 'mauricio@makerpixel.com.br',
-    proLaboreMensal: 6000,
-  },
-  {
-    id: 'socio-2',
-    nome: 'Felipe (Segundo Sócio)',
-    email: 'felipe@makerpixel.com.br',
-    participacao: 50,
-    vigenciaInicio: '2024-01',
-    chavePix: 'felipe@makerpixel.com.br',
-    proLaboreMensal: 6000,
+    proLaboreMensal: 8000,
   },
 ];
 
@@ -293,6 +285,7 @@ export const CLIENTES_INICIAIS: Cliente[] = [
     criadoEm: '2024-03-01',
     historicoInteracoes: [],
   },
+  ...CLIENTES_TUBARAO,
 ];
 
 export const LEADS_INICIAIS: LeadProspeccao[] = [
@@ -371,6 +364,7 @@ export const LEADS_INICIAIS: LeadProspeccao[] = [
       },
     ],
   },
+  ...LEADS_TUBARAO,
 ];
 
 export const CONTRATOS_INICIAIS: Contrato[] = [
@@ -655,19 +649,9 @@ export const DESPESAS_INICIAIS: Despesa[] = [
   // Novembro/2026 (Competência Atual)
   {
     id: 'desp-7',
-    descricao: 'Pró-labore Maurício',
+    descricao: 'Pró-labore Maurício G. Oliveira (Titular Único)',
     categoria: 'PRO_LABORE',
-    valor: 6000,
-    data: '2026-11-05',
-    competencia: '2026-11',
-    tipo: 'FIXA',
-    paga: false,
-  },
-  {
-    id: 'desp-8',
-    descricao: 'Pró-labore Felipe',
-    categoria: 'PRO_LABORE',
-    valor: 6000,
+    valor: 8000,
     data: '2026-11-05',
     competencia: '2026-11',
     tipo: 'FIXA',
@@ -700,32 +684,29 @@ export const FECHAMENTOS_INICIAIS: FechamentoMes[] = [
     competencia: '2026-10',
     fechado: true,
     dataFechamento: '2026-10-31T18:00:00Z',
-    socioFechamento: 'Maurício',
-    receitaTotal: 3870, // 750 + 820 + 1100 + 1200
-    despesasTotal: 16510, // Incluindo pró-labores
-    lucroCaixa: 22190, // Exemplo com receitas acumuladas de contratos sob medida
+    socioFechamento: 'Maurício G. Oliveira',
+    receitaTotal: 3870,
+    despesasTotal: 10510,
+    lucroCaixa: 22190,
     reservaCalculada: 4438, // 20%
     valorDisponivelDistribuicao: 17752,
     distribuicaoAprovadaSocio1: true,
     dataAprovacaoSocio1: '2026-10-31T19:30:00Z',
-    socio1Nome: 'Maurício',
+    socio1Nome: 'Maurício G. Oliveira',
     distribuicaoAprovadaSocio2: true,
-    dataAprovacaoSocio2: '2026-10-31T20:15:00Z',
-    socio2Nome: 'Felipe',
     prejuizoAbatido: 0,
   },
   {
     competencia: '2026-11',
     fechado: false, // Aberto para acompanhamento em tempo real!
     receitaTotal: 2670,
-    despesasTotal: 14270,
-    lucroCaixa: 28450, // Estimativa com faturamentos e recebimentos do mês
+    despesasTotal: 10270,
+    lucroCaixa: 28450,
     reservaCalculada: 5690,
     valorDisponivelDistribuicao: 22760,
-    distribuicaoAprovadaSocio1: true, // Maurício já aprovou prévia
-    dataAprovacaoSocio1: '2026-11-01T14:00:00Z',
-    socio1Nome: 'Maurício',
-    distribuicaoAprovadaSocio2: false, // Aguardando aprovação do Felipe!
+    distribuicaoAprovadaSocio1: false, // Disponível para aprovação pelo titular Maurício!
+    socio1Nome: undefined,
+    distribuicaoAprovadaSocio2: true,
     prejuizoAbatido: 0,
   },
 ];

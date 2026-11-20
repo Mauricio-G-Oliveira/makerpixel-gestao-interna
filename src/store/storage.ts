@@ -33,19 +33,19 @@ import {
 import { calcularValorProporcional, getCompetenciaAtual } from '../lib/utils';
 
 const STORAGE_KEYS = {
-  SOCIOS: 'mp_socios_v1',
-  PARAMETROS: 'mp_parametros_v1',
-  CLIENTES: 'mp_clientes_v1',
-  CONTRATOS: 'mp_contratos_v1',
-  FATURAS: 'mp_faturas_v1',
-  DESPESAS: 'mp_despesas_v1',
-  FECHAMENTOS: 'mp_fechamentos_v1',
-  ADIANTAMENTOS: 'mp_adiantamentos_v1',
-  PROJETOS: 'mp_projetos_v1',
-  TREINAMENTOS: 'mp_treinamentos_v1',
-  CHAMADOS: 'mp_chamados_v1',
-  AUDITORIA: 'mp_auditoria_v1',
-  LEADS: 'mp_leads_v1',
+  SOCIOS: 'mp_socios_v2',
+  PARAMETROS: 'mp_parametros_v2',
+  CLIENTES: 'mp_clientes_v2',
+  CONTRATOS: 'mp_contratos_v2',
+  FATURAS: 'mp_faturas_v2',
+  DESPESAS: 'mp_despesas_v2',
+  FECHAMENTOS: 'mp_fechamentos_v2',
+  ADIANTAMENTOS: 'mp_adiantamentos_v2',
+  PROJETOS: 'mp_projetos_v2',
+  TREINAMENTOS: 'mp_treinamentos_v2',
+  CHAMADOS: 'mp_chamados_v2',
+  AUDITORIA: 'mp_auditoria_v2',
+  LEADS: 'mp_leads_v2',
 };
 
 function getStorageItem<T>(key: string, defaultValue: T): T {
@@ -621,25 +621,23 @@ export function useAppData() {
     );
   };
 
-  const aprovarDistribuicaoLucro = (competencia: string, socioNumero: 1 | 2, nomeSocio: string) => {
+  const aprovarDistribuicaoLucro = (
+    competencia: string,
+    _socioNumero: number = 1,
+    nomeSocio: string = 'Maurício G. Oliveira'
+  ) => {
     setFechamentos(prev =>
       prev.map(f => {
         if (f.competencia === competencia) {
-          if (socioNumero === 1) {
-            return {
-              ...f,
-              distribuicaoAprovadaSocio1: true,
-              dataAprovacaoSocio1: new Date().toISOString(),
-              socio1Nome: nomeSocio,
-            };
-          } else {
-            return {
-              ...f,
-              distribuicaoAprovadaSocio2: true,
-              dataAprovacaoSocio2: new Date().toISOString(),
-              socio2Nome: nomeSocio,
-            };
-          }
+          return {
+            ...f,
+            distribuicaoAprovadaSocio1: true,
+            dataAprovacaoSocio1: new Date().toISOString(),
+            socio1Nome: nomeSocio,
+            distribuicaoAprovadaSocio2: true, // Titular Único (100% Maurício G. Oliveira)
+            dataAprovacaoSocio2: new Date().toISOString(),
+            socio2Nome: nomeSocio,
+          };
         }
         return f;
       })
@@ -649,7 +647,7 @@ export function useAppData() {
       'DistribuicaoLucros',
       competencia,
       'APROVAR_LUCRO',
-      `Sócio ${nomeSocio} aprovou a distribuição de lucros da competência ${competencia}.`
+      `Titular Único ${nomeSocio} aprovou 100% da distribuição de lucros da competência ${competencia}.`
     );
   };
 
@@ -812,6 +810,67 @@ export function useAppData() {
     );
   };
 
+  // IMPORTAÇÃO EM MASSA DE CONTATOS
+  const importarContatosEmMassa = (novosContatos: any[]) => {
+    const novosClientes: Cliente[] = novosContatos.map(c => {
+      const docLimpo = `TB${String(c.numero || Date.now()).padStart(4, '0')}000100`;
+      const obsTexto = c.isOrprocon
+        ? '⚠️ EMPRESA ONDE TRABALHO: NÃO ABORDAR'
+        : `Bairro: ${c.bairro || 'Centro'} | Tipo: ${c.tipo || 'Fixo'}${c.observacoes ? ' | ' + c.observacoes : ''}`;
+
+      return {
+        id: c.id || `cli-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        documento: docLimpo,
+        razaoSocial: (c.nome || 'Escritório Contábil').toUpperCase(),
+        nomeFantasia: c.nome || 'Escritório Contábil',
+        contato: 'Responsável Contábil',
+        email: '',
+        telefone: c.telefone || '',
+        cidade: c.cidade || 'Tubarão',
+        uf: c.uf || 'SC',
+        endereco: c.endereco || 'Tubarão/SC',
+        cnae: '6920-6/01 - Atividades de contabilidade',
+        origem: 'PROSPECCAO',
+        situacao: 'LEAD',
+        situacaoReceita: 'ATIVA',
+        observacoes: obsTexto,
+        criadoEm: new Date().toISOString().substring(0, 10),
+        historicoInteracoes: [],
+      };
+    });
+
+    const novosLeads: LeadProspeccao[] = novosContatos.map(c => {
+      const cliId = c.id || `cli-${Date.now()}`;
+      if (c.isOrprocon) {
+        return {
+          id: `lead-${cliId}`,
+          clienteId: cliId,
+          etapa: 'SAIU_DA_LISTA',
+          motivoPerda: 'Empresa onde trabalho: não abordar',
+          prioridadeFila: 9999,
+          historicoEnvios: [],
+        };
+      }
+      return {
+        id: `lead-${cliId}`,
+        clienteId: cliId,
+        etapa: 'NOVO',
+        prioridadeFila: c.numero || 50,
+        historicoEnvios: [],
+      };
+    });
+
+    setClientes(prev => [...prev, ...novosClientes]);
+    setLeads(prev => [...prev, ...novosLeads]);
+    registrarAuditoria(
+      'Maurício G. Oliveira',
+      'Clientes',
+      'Massa',
+      'CRIAR',
+      `${novosContatos.length} novos contatos importados para a base.`
+    );
+  };
+
   // SÓCIOS E PARÂMETROS
   const salvarSocios = (novosSocios: Socio[]) => {
     // Regra de ouro: soma das participações = 100%
@@ -844,6 +903,7 @@ export function useAppData() {
     chamados,
     auditoria,
     // Ações
+    importarContatosEmMassa,
     salvarCliente,
     adicionarInteracaoCliente,
     moverEtapaLead,

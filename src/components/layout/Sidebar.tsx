@@ -138,20 +138,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, badgeContagen
           </button>
         </div>
 
-        {/* Badge do Perfil Ativo */}
+        {/* Badge do Titular Único */}
         <div className="px-4 py-3 mx-3 my-2 rounded-xl bg-slate-800/60 border border-slate-700/50 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {isSocio ? (
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            ) : (
-              <UserCheck className="w-4 h-4 text-amber-400" />
-            )}
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
             <span className="text-xs font-semibold tracking-wide uppercase text-slate-200">
-              {isSocio ? 'Perfil Sócio' : 'Colaborador'}
+              Titular Único
             </span>
           </div>
-          <span className="text-[10px] px-2 py-0.5 rounded-full font-mono bg-slate-900 text-slate-400">
-            {isSocio ? '50%' : 'Limitado'}
+          <span className="text-[10px] px-2 py-0.5 rounded-full font-mono bg-maker-primary/30 text-maker-primary border border-maker-primary/40 font-bold">
+            100% Quotas
           </span>
         </div>
 

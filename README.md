@@ -23,13 +23,13 @@
 
 ## 📖 Visão Geral do Projeto
 
-O **MakerPixel Gestão Interna** é o sistema corporativo (*ERP/Backoffice*) desenvolvido para centralizar toda a operação executiva, societária, comercial e financeira da **MakerPixel**, empresa de tecnologia e engenharia de software sediada em **Tubarão / SC**, fundada por **Maurício G. Oliveira** e administrada por **dois sócios (50% / 50%)**.
+O **MakerPixel Gestão Interna** é o sistema corporativo (*ERP/Backoffice*) desenvolvido para centralizar toda a operação executiva, comercial e financeira da **MakerPixel**, empresa de tecnologia e engenharia de software sediada em **Tubarão / SC**, fundada e administrada exclusivamente por **Maurício G. Oliveira** como **Titular Único (100% das Quotas - Empresa Unipessoal / Acesso Exclusivo)**.
 
 Para manter total clareza na governança de produtos, os ecossistemas são estruturados em dois projetos complementares:
 
 1. **MakerPixel Gestão Interna (Este Sistema):**
-   - O painel operacional de uso interno dos sócios e colaboradores da MakerPixel.
-   - Gerencia o ciclo completo do negócio: prospecção de leads contábeis, gestão de contratos, emissão de faturas sem duplicação, controle de despesas e lucros em regime de caixa, **distribuição de lucros com dupla aprovação**, implantações sequenciais, capacitações técnicas com emissão de certificados oficiais e suporte técnico com SLA.
+   - O painel operacional de uso interno exclusivo de **Maurício G. Oliveira**.
+   - Gerencia o ciclo completo do negócio: prospecção de leads contábeis com base real de 47 escritórios em Tubarão/SC, **central e exportador de contatos em massa (CSV Excel, JSON, vCard Celular, WhatsApp)**, gestão de contratos, emissão de faturas sem duplicação, controle de despesas e lucros em regime de caixa, **distribuição de lucros do titular único**, implantações sequenciais, capacitações técnicas com emissão de certificados oficiais e suporte técnico com SLA.
 
 2. **MakerPixel Contábil (O Produto Comercializado):**
    - A suíte de software e robôs de automação vendida pela MakerPixel para escritórios de contabilidade em Santa Catarina e em todo o Brasil.
@@ -41,7 +41,7 @@ Para manter total clareza na governança de produtos, os ecossistemas são estru
 
 O sistema segue rigorosamente o guia de estilos e diretrizes visuais da MakerPixel:
 
-- **Menu Lateral Escuro (`#0E1726`):** Barra de navegação corporativa com visualização dos módulos, indicador de perfil ativo (`SÓCIO` vs `COLABORADOR`) e suporte a menu gaveta (*drawer*) responsivo em smartphones.
+- **Menu Lateral Escuro (`#0E1726`):** Barra de navegação corporativa com visualização dos módulos, indicador de perfil exclusivo de Titular Único e suporte a menu gaveta (*drawer*) responsivo em smartphones.
 - **Fundo da Aplicação (`#F4F6FA`):** Contraste calibrado para trabalho contínuo, com suporte a **Modo Escuro / Dark Mode** (`#090D16`) acionável a qualquer momento no topo.
 - **Cartões e Componentes:** Superfície branca `#FFFFFF` com bordas sutis `#E3E7EE`, cantos arredondados de **12px** (`rounded-xl`) e alvos de toque com no mínimo **44px** (*touch-friendly*).
 - **Paleta Semântica:**
@@ -58,26 +58,31 @@ O sistema segue rigorosamente o guia de estilos e diretrizes visuais da MakerPix
 ### 📊 1. Dashboard Executivo & Governança (`/`)
 - **Métricas em Tempo Real:** MRR (*Monthly Recurring Revenue*) das mensalidades ativas do MakerPixel Contábil, Receita do mês em Regime de Caixa, Total a Receber (com destaque visual em vermelho para faturas vencidas) e Lucro Líquido Real.
 - **Evolução Financeira:** Gráfico comparativo de Receitas vs Despesas dos últimos 6 meses.
-- **Distribuição de Lucros do Mês:** Bloco de acompanhamento em tempo real com apuração de reserva estatutária (20%), maior resto nos centavos e status da **Aprovação Dupla**.
-- **Alerta do Fator R:** Monitoramento contínuo da folha de pagamento dos sócios vs faturamento anual, alertando caso o índice fique abaixo de **28%** (enquadramento tributário Simples Nacional).
+- **Distribuição de Lucros do Mês:** Bloco de acompanhamento em tempo real para Maurício G. Oliveira com reserva estatutária (20%) e status de aprovação.
+- **Alerta do Fator R:** Monitoramento contínuo da folha de pagamento vs faturamento anual, alertando caso o índice fique abaixo de **28%** (enquadramento tributário Simples Nacional).
 - **Listas Rápidas Acionáveis:** Faturas abertas com cobrança rápida para WhatsApp, contratos em aniversário de vigência para reajuste anual e fila semanal de leads.
 
 ### 👥 2. Clientes & Consulta à Receita Federal (`/clientes`)
 - Cadastro completo de escritórios contábeis clientes, dados cadastrais e fiscais.
+- **Central de Exportação em Massa:** Acesso imediato para exportar contatos em CSV, WhatsApp, vCard ou JSON.
 - **Validação Algorítmica de Documento:** Validação estrita de dígitos verificadores de CNPJ e CPF reais.
 - **Botão "Buscar na Receita":** Integração via **BrasilAPI** que preenche exclusivamente os campos vazios e emite alertas caso a situação cadastral não esteja ATIVA.
 - Histórico de interações por múltiplos canais (WhatsApp, E-mail, Reunião, Telefone).
 - **Transição Automática de Status:** `LEAD` ➔ `PROPOSTA` ➔ `CLIENTE` (ao assinar contrato) ➔ `EX_CLIENTE` (ao encerrar contratos).
 
-### 🎯 3. Funil de Vendas & Fila Semanal de 10 Leads (`/prospeccao`)
-- **Fila da Semana:** Seleção inteligente de até 10 leads priorizados automaticamente (1º mesma região - Tubarão/SC, 2º nunca contatados, 3º mais antigos).
-- **Cadência Automatizada:**
-  - 1ª abordagem comercial do *MakerPixel Contábil*;
-  - Lembrete amigável após 3 dias sem resposta;
-  - Quarentena de 90 dias após 7 dias do lembrete sem retorno.
-- **Lista de Exclusão (`SAIU_DA_LISTA`):** Bloqueio permanente por documento e telefone para contatos que solicitaram descadastro.
-- **Disparo Assistido via WhatsApp e E-mail:** Modelos com interpolação dinâmica de `{nome}`, `{empresa}`, `{cidade}` e frase de saída obrigatória (*"Se não fizer sentido agora, é só me avisar que não volto a escrever."*).
-- **Placar Semanal:** Contatados, respostas recebidas, demonstrações agendadas e taxa de conversão.
+### 🎯 3. Funil de Vendas, Base de 47 Escritórios de Tubarão & Exportador em Massa (`/prospeccao`)
+- **Base Integrada de 47 Escritórios Contábeis em Tubarão/SC:** Dados reais coletados no Google Maps com telefones celulares (WhatsApp), telefones fixos, bairros e endereços.
+- **Exclusão Preventiva da Orprocon:** O escritório Orprocon é automaticamente sinalizado em vermelho como `SAIU_DA_LISTA` com o aviso (*"Empresa onde trabalho: não abordar"*), garantindo que nunca entre acidentalmente na fila de contato.
+- **Exportador & Gerenciador de Contatos em Massa (Modal Central):**
+  - 📊 **Exportar Planilha CSV (Excel / Sheets):** Arquivo com UTF-8 BOM para abrir com acentuação impecável no Microsoft Excel;
+  - 💬 **Exportar Lista para WhatsApp / CRM:** Formato limpo `55DDDNumero;Nome;Bairro` com botão de cópia instantânea;
+  - 📇 **Exportar Agenda Celular (vCard .vcf):** Arquivo `.vcf` padronizado para importar todos os contatos diretamente na agenda do iPhone ou Android de uma só vez;
+  - ⚙️ **Exportar JSON Estruturado:** Dados completos para automações e integrações;
+  - 📥 **Importador em Massa:** Permite colar novas listas de contatos no formato CSV/texto para expansão futura da base;
+  - ⬇️ **Download Direto do CSV Original:** Botão de 1 clique para baixar a lista pura dos 47 escritórios contábeis fornecida.
+- **Fila da Semana (Até 10 Leads):** Seleção inteligente priorizada (Tubarão/SC primeiro ➔ sem contato prévio ➔ mais antigos).
+- **Cadência Automatizada:** 1ª abordagem ➔ lembrete amigável após 3 dias ➔ quarentena de 90 dias após 7 dias sem retorno.
+- **Disparos Assistidos via WhatsApp:** Mensagens interpoladas dinamicamente com `{nome}`, `{empresa}`, `{cidade}` e frase de saída obrigatória.
 
 ### 📜 4. Gestão de Contratos & Reajuste Anual IPCA (`/contratos`)
 - Contratos de mensalidade recorrente, implantação de módulos, desenvolvimento sob medida e turmas de treinamento.
@@ -90,16 +95,16 @@ O sistema segue rigorosamente o guia de estilos e diretrizes visuais da MakerPix
 - **Cálculo Proporcional no 1º Mês:** Fórmula matemática exata: `(valorMensal / diasDoMes) * diasRestantes`.
 - **Baixa Inteligente:** Apuração automática de juros/multa recebidos ou desconto concedido em relação ao valor original.
 - **Régua de Cobrança Assistida:** Modelos de mensagem para 3 dias antes do vencimento, dia do vencimento, +5 dias de atraso e +15 dias de atraso (com link direto para o WhatsApp).
-- **Gestão de Despesas:** Despesas fixas e variáveis classificadas por categoria (Pró-labore dos sócios, Infraestrutura Cloud AWS/Supabase, Honorários Contábeis, DAS Simples).
+- **Gestão de Despesas:** Despesas fixas e variáveis classificadas por categoria (Pró-labore do titular Maurício G. Oliveira, Infraestrutura Cloud AWS/Supabase, Honorários Contábeis, DAS Simples).
 - **Fechamento do Mês:** Trava definitiva de lançamentos para auditoria e destravamento com justificativa obrigatória.
 
-### ⚖️ 6. Distribuição de Lucros com Dupla Aprovação (`/distribuicao-lucros`)
+### ⚖️ 6. Distribuição de Lucros do Titular Único (`/distribuicao-lucros`)
 - **Regra de Ouro:** Apenas competências formalmente fechadas no Financeiro liberam a distribuição de lucros definitiva; competências abertas exibem prévia em tempo real.
 - **Fórmula de Apuração:** `Lucro Caixa - Prejuízo Acumulado - Reserva Estatutária (20%) = Valor Líquido a Distribuir`.
-- **Método do Maior Resto:** Arredondamento exato nos centavos para fechar 100% com a soma das quotas dos sócios (sem perda de dízimas).
-- **Dedução de Adiantamentos:** Retiradas antecipadas no mês são abatidas do valor líquido final de cada sócio.
-- **Aprovação Dupla Obrigatória:** O pagamento só é registrado após a validação e assinatura digital de **ambos os sócios** (Maurício e Felipe).
-- **Alerta Fiscal:** Notificação visual em caso de retirada superior a R$ 50.000,00 por sócio no mês (retenção de 10% de IRRF).
+- **100% Destinado a Maurício G. Oliveira:** Empresa Unipessoal (100% das Quotas).
+- **Dedução de Adiantamentos:** Retiradas antecipadas no mês são abatidas do valor líquido final.
+- **Aprovação do Titular Único:** Liberação formal com assinatura registrada em auditoria por Maurício G. Oliveira.
+- **Alerta Fiscal:** Notificação visual em caso de retirada superior a R$ 50.000,00 no mês (retenção de 10% de IRRF).
 - **Relatório para Ata de Aprovação de Contas:** Demonstrativo anual formatado para impressão oficial em PDF.
 
 ### 🚀 7. Implantações Sequenciais SCI Único (`/projetos`)

@@ -78,7 +78,7 @@ export const ConfiguracoesPage: React.FC = () => {
           <Settings className="w-6 h-6 text-maker-primary" /> Configurações & Auditoria do Sistema
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Sócios da MakerPixel (50% / 50%), regras de reserva técnica, vigências e trilha completa de auditoria.
+          Titular Único da MakerPixel (100% Maurício G. Oliveira), regras de reserva técnica, vigências e trilha completa de auditoria.
         </p>
       </div>
 

@@ -66,20 +66,13 @@ export const DistribuicaoLucrosPage: React.FC = () => {
   const centavosTotais = Math.round(totalADistribuir * 100);
   const divisaoBruta = distribuirComMaiorResto(centavosTotais, participacoes);
 
-  // Status de aprovação dupla
+  // Status de aprovação do Titular Único
   const socio1 = socios[0];
-  const socio2 = socios[1];
-
-  const socio1Aprovou = fechamento.distribuicaoAprovadaSocio1;
-  const socio2Aprovou = fechamento.distribuicaoAprovadaSocio2;
-  const aprovacaoDuplaConcluida = socio1Aprovou && socio2Aprovou;
-
-  // Identificação do sócio atual
-  const socioAtualNumero = usuario.nome.includes('Maurício') ? 1 : 2;
-  const podeAprovar = isSocio && (socioAtualNumero === 1 ? !socio1Aprovou : !socio2Aprovou);
+  const aprovacaoConcluida = fechamento.distribuicaoAprovadaSocio1;
+  const podeAprovar = isSocio && !aprovacaoConcluida;
 
   const handleAprovar = () => {
-    aprovarDistribuicaoLucro(competenciaSelecionada, socioAtualNumero, usuario.nome);
+    aprovarDistribuicaoLucro(competenciaSelecionada, 1, 'Maurício G. Oliveira');
   };
 
   return (
@@ -88,10 +81,10 @@ export const DistribuicaoLucrosPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <PieChart className="w-6 h-6 text-maker-primary" /> Distribuição de Lucros dos Sócios
+            <PieChart className="w-6 h-6 text-maker-primary" /> Distribuição de Lucros (Titular Único)
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Cálculo exato com retenção de reserva ({reservaPercentual}%), maior resto nos centavos, dedução de adiantamentos e aprovação dupla.
+            Cálculo exato com retenção de reserva ({reservaPercentual}%), dedução de adiantamentos e aprovação de Maurício G. Oliveira (100% das Quotas).
           </p>
         </div>
 
@@ -299,7 +292,7 @@ export const DistribuicaoLucrosPage: React.FC = () => {
               </div>
 
               {/* Botão de Aprovação Individual */}
-              {isSocio && idx + 1 === socioAtualNumero && (
+              {isSocio && (
                 <div className="mt-5 pt-3">
                   <button
                     onClick={handleAprovar}
@@ -311,7 +304,7 @@ export const DistribuicaoLucrosPage: React.FC = () => {
                     }`}
                   >
                     <CheckCircle2 className="w-4 h-4" />
-                    {aprovado ? 'Você Já Aprovou esta Distribuição' : `Aprovar como ${usuario.nome}`}
+                    {aprovado ? 'Distribuição Aprovada por Maurício G. Oliveira' : 'Aprovar Distribuição de Lucros (100%)'}
                   </button>
                 </div>
               )}
@@ -320,14 +313,14 @@ export const DistribuicaoLucrosPage: React.FC = () => {
         })}
       </div>
 
-      {/* BLOCO DE APROVAÇÃO DUPLA (STATUS GERAL) */}
+      {/* BLOCO DE APROVAÇÃO DO TITULAR ÚNICO */}
       <div className="bg-white dark:bg-maker-darkCard border border-maker-border dark:border-maker-darkBorder rounded-[12px] p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <UserCheck className="w-5 h-5 text-maker-primary" /> Regra de Aprovação Dupla Obrigatória
+            <UserCheck className="w-5 h-5 text-maker-primary" /> Aprovação do Titular Único (Maurício G. Oliveira)
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            A distribuição de lucros só é gravada e liberada para pagamento após a assinatura digital de ambos os sócios.
+            Empresa Unipessoal (100% das Quotas): A distribuição de lucros é formalizada e liberada mediante aprovação de Maurício G. Oliveira.
           </p>
         </div>
 
@@ -335,30 +328,17 @@ export const DistribuicaoLucrosPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <span
               className={`w-3 h-3 rounded-full ${
-                socio1Aprovou ? 'bg-emerald-500' : 'bg-amber-400 animate-pulse'
+                aprovacaoConcluida ? 'bg-emerald-500' : 'bg-amber-400 animate-pulse'
               }`}
             />
             <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              Sócio 1 ({socio1Aprovou ? 'OK' : 'Pendente'})
-            </span>
-          </div>
-
-          <span className="text-slate-300 dark:text-slate-600 font-bold">+</span>
-
-          <div className="flex items-center gap-2">
-            <span
-              className={`w-3 h-3 rounded-full ${
-                socio2Aprovou ? 'bg-emerald-500' : 'bg-amber-400 animate-pulse'
-              }`}
-            />
-            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              Sócio 2 ({socio2Aprovou ? 'OK' : 'Pendente'})
+              Titular ({aprovacaoConcluida ? 'Aprovado' : 'Pendente'})
             </span>
           </div>
 
           <div className="ml-3 pl-3 border-l border-slate-200 dark:border-slate-700">
-            <Badge variant={aprovacaoDuplaConcluida ? 'success' : 'warning'}>
-              {aprovacaoDuplaConcluida ? 'Dupla Aprovação Concluída' : 'Aguardando Segundo Sócio'}
+            <Badge variant={aprovacaoConcluida ? 'success' : 'warning'}>
+              {aprovacaoConcluida ? 'Distribuição Aprovada (100%)' : 'Pendente de Validação'}
             </Badge>
           </div>
         </div>

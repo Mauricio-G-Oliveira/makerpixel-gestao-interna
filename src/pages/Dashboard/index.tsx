@@ -326,14 +326,11 @@ export const DashboardPage: React.FC = () => {
             {/* Divisão por Sócio */}
             <div className="mt-4 space-y-2">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                Divisão dos Sócios (50% / 50%)
+                Titular Único (100% das Quotas)
               </span>
               {socios.map((s, idx) => {
-                const valorSocio = distribuicaoSocios[s.id] || aDistribuir / 2;
-                const aprovado =
-                  idx === 0
-                    ? fechamentoAtual.distribuicaoAprovadaSocio1
-                    : fechamentoAtual.distribuicaoAprovadaSocio2;
+                const valorSocio = distribuicaoSocios[s.id] || aDistribuir;
+                const aprovado = fechamentoAtual.distribuicaoAprovadaSocio1;
                 return (
                   <div
                     key={s.id}
@@ -341,7 +338,7 @@ export const DashboardPage: React.FC = () => {
                   >
                     <div>
                       <p className="font-semibold text-slate-800 dark:text-white">{s.nome}</p>
-                      <p className="text-[11px] text-slate-400">{s.participacao}% de participação</p>
+                      <p className="text-[11px] text-slate-400">{s.participacao}% de participação • Titular Único</p>
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-slate-900 dark:text-white text-sm">
@@ -357,7 +354,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Botão de Ação / Aprovação Dupla */}
+          {/* Botão de Ação / Aprovação */}
           <div className="mt-5 pt-4 border-t border-maker-border dark:border-maker-darkBorder">
             {isSocio ? (
               <div className="flex items-center gap-3">
@@ -372,8 +369,8 @@ export const DashboardPage: React.FC = () => {
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   {socioJaAprovou
-                    ? `Aprovado por Você (${usuario.nome})`
-                    : `Aprovar como ${usuario.nome}`}
+                    ? 'Distribuição Aprovada por Maurício G. Oliveira'
+                    : 'Aprovar Distribuição de Lucros (100%)'}
                 </button>
                 <Link
                   to="/distribuicao-lucros"
