@@ -33,22 +33,36 @@ export const DistribuicaoLucrosPage: React.FC = () => {
     socios,
     parametros,
     adiantamentos,
+    faturas,
+    despesas,
     aprovarDistribuicaoLucro,
   } = useAppData();
 
   const [competenciaSelecionada, setCompetenciaSelecionada] = useState<string>('2026-11');
   const [modalAtaAberto, setModalAtaAberto] = useState(false);
 
+  const faturasPagas = faturas.filter(
+    f => f.competencia === competenciaSelecionada && f.situacao === 'PAGA'
+  );
+  const receitaCompetencia = faturasPagas.reduce((acc, f) => acc + (f.valorRecebido || f.valorBruto), 0);
+  const despesasPagas = despesas.filter(
+    d => d.competencia === competenciaSelecionada && d.paga
+  );
+  const despesasCompetencia = despesasPagas.reduce((acc, d) => acc + d.valor, 0);
+  const lucroCompetencia = Math.max(0, receitaCompetencia - despesasCompetencia);
+  const reservaCalculada = (lucroCompetencia * (parametros.reservaPercentual || 20)) / 100;
+  const valorDisponivel = Math.max(0, lucroCompetencia - reservaCalculada);
+
   const fechamento = fechamentos.find(f => f.competencia === competenciaSelecionada) || {
     competencia: competenciaSelecionada,
     fechado: false,
-    receitaTotal: 42720,
-    despesasTotal: 14270,
-    lucroCaixa: 28450,
-    reservaCalculada: 5690,
-    valorDisponivelDistribuicao: 22760,
-    distribuicaoAprovadaSocio1: true,
-    distribuicaoAprovadaSocio2: false,
+    receitaTotal: receitaCompetencia,
+    despesasTotal: despesasCompetencia,
+    lucroCaixa: lucroCompetencia,
+    reservaCalculada: reservaCalculada,
+    valorDisponivelDistribuicao: valorDisponivel,
+    distribuicaoAprovadaSocio1: false,
+    distribuicaoAprovadaSocio2: true,
     prejuizoAbatido: 0,
   };
 
@@ -64,12 +78,14 @@ export const DistribuicaoLucrosPage: React.FC = () => {
   // Divisão com o Método do Maior Resto
   const participacoes = socios.map(s => ({ id: s.id, percentual: s.participacao }));
   const centavosTotais = Math.round(totalADistribuir * 100);
-  const divisaoBruta = distribuirComMaiorResto(centavosTotais, participacoes);
+  const divisaoBruta = totalADistribuir > 0
+    ? distribuirComMaiorResto(centavosTotais, participacoes)
+    : Object.fromEntries(socios.map(s => [s.id, 0]));
 
   // Status de aprovação do Titular Único
   const socio1 = socios[0];
   const aprovacaoConcluida = fechamento.distribuicaoAprovadaSocio1;
-  const podeAprovar = isSocio && !aprovacaoConcluida;
+  const podeAprovar = isSocio && !aprovacaoConcluida && totalADistribuir > 0;
 
   const handleAprovar = () => {
     aprovarDistribuicaoLucro(competenciaSelecionada, 1, 'Maurício G. Oliveira');
@@ -95,8 +111,8 @@ export const DistribuicaoLucrosPage: React.FC = () => {
             onChange={e => setCompetenciaSelecionada(e.target.value)}
             className="px-3 py-2 text-xs font-bold rounded-xl border border-maker-border dark:border-maker-darkBorder bg-white dark:bg-maker-darkCard text-slate-800 dark:text-white min-h-[44px]"
           >
-            <option value="2026-11">Novembro / 2026</option>
-            <option value="2026-10">Outubro / 2026 (Fechado e Aprovado)</option>
+            <option value="2026-11">Novembro / 2026 (Competência Atual)</option>
+            <option value="2026-12">Dezembro / 2026</option>
           </select>
 
           <button

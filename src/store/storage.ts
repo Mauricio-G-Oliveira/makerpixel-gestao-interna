@@ -32,20 +32,33 @@ import {
 } from './mockData';
 import { calcularValorProporcional, getCompetenciaAtual } from '../lib/utils';
 
+// Limpeza de chaves legadas de teste v1 e v2 do localStorage
+try {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('mp_') && (key.endsWith('_v1') || key.endsWith('_v2'))) {
+        localStorage.removeItem(key);
+      }
+    });
+  }
+} catch {
+  // Ignora se não houver acesso
+}
+
 const STORAGE_KEYS = {
-  SOCIOS: 'mp_socios_v2',
-  PARAMETROS: 'mp_parametros_v2',
-  CLIENTES: 'mp_clientes_v2',
-  CONTRATOS: 'mp_contratos_v2',
-  FATURAS: 'mp_faturas_v2',
-  DESPESAS: 'mp_despesas_v2',
-  FECHAMENTOS: 'mp_fechamentos_v2',
-  ADIANTAMENTOS: 'mp_adiantamentos_v2',
-  PROJETOS: 'mp_projetos_v2',
-  TREINAMENTOS: 'mp_treinamentos_v2',
-  CHAMADOS: 'mp_chamados_v2',
-  AUDITORIA: 'mp_auditoria_v2',
-  LEADS: 'mp_leads_v2',
+  SOCIOS: 'mp_socios_v3',
+  PARAMETROS: 'mp_parametros_v3',
+  CLIENTES: 'mp_clientes_v3',
+  CONTRATOS: 'mp_contratos_v3',
+  FATURAS: 'mp_faturas_v3',
+  DESPESAS: 'mp_despesas_v3',
+  FECHAMENTOS: 'mp_fechamentos_v3',
+  ADIANTAMENTOS: 'mp_adiantamentos_v3',
+  PROJETOS: 'mp_projetos_v3',
+  TREINAMENTOS: 'mp_treinamentos_v3',
+  CHAMADOS: 'mp_chamados_v3',
+  AUDITORIA: 'mp_auditoria_v3',
+  LEADS: 'mp_leads_v3',
 };
 
 function getStorageItem<T>(key: string, defaultValue: T): T {

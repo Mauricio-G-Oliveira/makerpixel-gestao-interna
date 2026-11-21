@@ -76,17 +76,21 @@ export const DashboardPage: React.FC = () => {
     .reduce((acc, d) => acc + d.valor, 0);
   const lucroMes = receitaMes - despesasPagasMes;
 
-  // 5. Distribuição de Lucros do Mês
+  // 5. Distribuição de Lucros do Mês (Cálculo real de caixa)
+  const lucroEstimado = Math.max(0, receitaMes - despesasPagasMes);
+  const reservaEstimada = (lucroEstimado * (parametros.reservaPercentual || 20)) / 100;
+  const aDistribuirEstimado = Math.max(0, lucroEstimado - reservaEstimada);
+
   const fechamentoAtual = fechamentos.find(f => f.competencia === competenciaAtual) || {
     competencia: competenciaAtual,
     fechado: false,
     receitaTotal: receitaMes,
     despesasTotal: despesasPagasMes,
-    lucroCaixa: 28450, // Estimativa com contratos sob medida
-    reservaCalculada: 5690,
-    valorDisponivelDistribuicao: 22760,
-    distribuicaoAprovadaSocio1: true,
-    distribuicaoAprovadaSocio2: false,
+    lucroCaixa: lucroEstimado,
+    reservaCalculada: reservaEstimada,
+    valorDisponivelDistribuicao: aDistribuirEstimado,
+    distribuicaoAprovadaSocio1: false,
+    distribuicaoAprovadaSocio2: true,
     prejuizoAbatido: 0,
   };
 
@@ -95,15 +99,19 @@ export const DashboardPage: React.FC = () => {
 
   // Divisão entre os sócios com método do maior resto
   const participacoes = socios.map(s => ({ id: s.id, percentual: s.participacao }));
-  const distribuicaoSocios = distribuirComMaiorResto(Math.round(aDistribuir * 100), participacoes);
+  const distribuicaoSocios = aDistribuir > 0
+    ? distribuirComMaiorResto(Math.round(aDistribuir * 100), participacoes)
+    : Object.fromEntries(socios.map(s => [s.id, 0]));
 
   // 6. Indicador Fator R (Folha de 12 meses ÷ Receita de 12 meses)
-  // Pró-labore mensal dos sócios = R$ 12.000 x 12 = R$ 144.000
-  // Receita anual aproximada = R$ 380.000
-  const folhaAnual = socios.reduce((acc, s) => acc + (s.proLaboreMensal || 6000) * 12, 0);
-  const receitaAnual = 385000;
-  const fatorRPercentual = Math.round((folhaAnual / receitaAnual) * 100);
-  const fatorRAlerta = fatorRPercentual < 28;
+  const folhaAnual = socios.reduce((acc, s) => acc + (s.proLaboreMensal || 8000) * 12, 0);
+  const receitaAnual = faturas
+    .filter(f => f.situacao === 'PAGA')
+    .reduce((acc, f) => acc + (f.valorRecebido || f.valorBruto), 0);
+  const fatorRPercentual = receitaAnual > 0 
+    ? Math.min(100, Math.round((folhaAnual / receitaAnual) * 100)) 
+    : 100;
+  const fatorRAlerta = receitaAnual > 0 && fatorRPercentual < 28;
 
   // 7. Fila de prospecção da semana (máximo 10)
   const leadsFila = leads.filter(l => l.etapa === 'NOVO' || l.etapa === 'CONTATADO');
@@ -183,7 +191,7 @@ export const DashboardPage: React.FC = () => {
 
         <StatCard
           titulo="Receita do Mês"
-          valor={formatarMoeda(receitaMes || 3870)}
+          valor={formatarMoeda(receitaMes)}
           subtexto="Regime de caixa (recebido)"
           icone={DollarSign}
           iconeCor="success"
@@ -239,46 +247,72 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Gráfico Visual Bar Chart SVG */}
-          <div className="h-56 w-full flex items-end justify-between gap-3 pt-6 pb-2 px-2">
-            {[
-              { mes: 'Jun', rec: 26000, desp: 14200 },
-              { mes: 'Jul', rec: 29500, desp: 15100 },
-              { mes: 'Ago', rec: 31000, desp: 15400 },
-              { mes: 'Set', rec: 34800, desp: 16100 },
-              { mes: 'Out', rec: 38700, desp: 16510 },
-              { mes: 'Nov', rec: 42720, desp: 14270 },
-            ].map(item => {
-              const maxVal = 45000;
-              const hRec = Math.round((item.rec / maxVal) * 160);
-              const hDesp = Math.round((item.desp / maxVal) * 160);
+          {/* Gráfico Visual Bar Chart SVG Dinâmico */}
+          {(() => {
+            const competencias6Meses = ['2026-06', '2026-07', '2026-08', '2026-09', '2026-10', '2026-11'];
+            const nomesMesesAbrev = ['Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'];
+            const dadosEvolucao = competencias6Meses.map((comp, idx) => {
+              const rec = faturas
+                .filter(f => f.competencia === comp && f.situacao === 'PAGA')
+                .reduce((acc, f) => acc + (f.valorRecebido || f.valorBruto), 0);
+              const desp = despesas
+                .filter(d => d.competencia === comp && d.paga)
+                .reduce((acc, d) => acc + d.valor, 0);
+              return { mes: nomesMesesAbrev[idx], rec, desp };
+            });
+            const maxGrafico = Math.max(1000, ...dadosEvolucao.map(d => Math.max(d.rec, d.desp)));
+            const temMovimentacao = dadosEvolucao.some(d => d.rec > 0 || d.desp > 0);
+
+            if (!temMovimentacao) {
               return (
-                <div key={item.mes} className="flex-1 flex flex-col items-center gap-2 group">
-                  <div className="flex items-end gap-1.5 w-full justify-center h-44">
-                    <div
-                      style={{ height: `${hRec}px` }}
-                      className="w-5 sm:w-7 bg-maker-primary rounded-t-md transition-all group-hover:brightness-110 shadow-sm relative group/rec"
-                    >
-                      <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-0.5 px-1.5 rounded opacity-0 group-hover/rec:opacity-100 transition-opacity whitespace-nowrap z-20">
-                        {formatarMoeda(item.rec)}
-                      </span>
-                    </div>
-                    <div
-                      style={{ height: `${hDesp}px` }}
-                      className="w-5 sm:w-7 bg-rose-400 dark:bg-rose-500 rounded-t-md transition-all group-hover:brightness-110 shadow-sm relative group/desp"
-                    >
-                      <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-0.5 px-1.5 rounded opacity-0 group-hover/desp:opacity-100 transition-opacity whitespace-nowrap z-20">
-                        {formatarMoeda(item.desp)}
-                      </span>
-                    </div>
+                <div className="h-56 w-full flex flex-col items-center justify-center text-center p-4">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-3">
+                    <DollarSign className="w-6 h-6 text-slate-400" />
                   </div>
-                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    {item.mes}
-                  </span>
+                  <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    Aguardando primeiras movimentações financeiras
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-1 max-w-sm">
+                    Conforme as faturas dos clientes forem recebidas e as despesas pagas no módulo Financeiro, as barras comparativas serão traçadas aqui automaticamente.
+                  </p>
                 </div>
               );
-            })}
-          </div>
+            }
+
+            return (
+              <div className="h-56 w-full flex items-end justify-between gap-3 pt-6 pb-2 px-2">
+                {dadosEvolucao.map(item => {
+                  const hRec = Math.round((item.rec / maxGrafico) * 160);
+                  const hDesp = Math.round((item.desp / maxGrafico) * 160);
+                  return (
+                    <div key={item.mes} className="flex-1 flex flex-col items-center gap-2 group">
+                      <div className="flex items-end gap-1.5 w-full justify-center h-44">
+                        <div
+                          style={{ height: `${Math.max(4, hRec)}px` }}
+                          className="w-5 sm:w-7 bg-maker-primary rounded-t-md transition-all group-hover:brightness-110 shadow-sm relative group/rec"
+                        >
+                          <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-0.5 px-1.5 rounded opacity-0 group-hover/rec:opacity-100 transition-opacity whitespace-nowrap z-20">
+                            {formatarMoeda(item.rec)}
+                          </span>
+                        </div>
+                        <div
+                          style={{ height: `${Math.max(4, hDesp)}px` }}
+                          className="w-5 sm:w-7 bg-rose-400 dark:bg-rose-500 rounded-t-md transition-all group-hover:brightness-110 shadow-sm relative group/desp"
+                        >
+                          <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-0.5 px-1.5 rounded opacity-0 group-hover/desp:opacity-100 transition-opacity whitespace-nowrap z-20">
+                            {formatarMoeda(item.desp)}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        {item.mes}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
 
         {/* Bloco Distribuição de Lucros do Mês (Coração do Sistema) */}
@@ -360,15 +394,19 @@ export const DashboardPage: React.FC = () => {
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleAprovar}
-                  disabled={socioJaAprovou}
+                  disabled={socioJaAprovou || aDistribuir === 0}
                   className={`flex-1 min-h-[44px] px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
-                    socioJaAprovou
+                    aDistribuir === 0
+                      ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
+                      : socioJaAprovou
                       ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 cursor-default'
                       : 'bg-maker-primary hover:bg-maker-primaryHover text-white shadow-md shadow-maker-primary/20'
                   }`}
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  {socioJaAprovou
+                  {aDistribuir === 0
+                    ? 'Sem Lucro a Distribuir no Momento'
+                    : socioJaAprovou
                     ? 'Distribuição Aprovada por Maurício G. Oliveira'
                     : 'Aprovar Distribuição de Lucros (100%)'}
                 </button>
@@ -405,36 +443,43 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="space-y-2.5">
-            {faturasAbertas.slice(0, 3).map(fat => {
-              const cli = clientes.find(c => c.id === fat.clienteId);
-              return (
-                <div
-                  key={fat.id}
-                  className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between text-xs"
-                >
-                  <div>
-                    <p className="font-semibold text-slate-800 dark:text-white truncate max-w-[150px]">
-                      {cli?.nomeFantasia || cli?.razaoSocial || 'Cliente'}
-                    </p>
-                    <p className="text-slate-400 text-[11px]">
-                      Vence em {formatarData(fat.dataVencimento)}
-                    </p>
+            {faturasAbertas.length === 0 ? (
+              <div className="p-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400">
+                <CheckCircle2 className="w-5 h-5 mx-auto mb-1 text-emerald-500" />
+                Nenhuma fatura em aberto. Todas as cobranças em dia!
+              </div>
+            ) : (
+              faturasAbertas.slice(0, 3).map(fat => {
+                const cli = clientes.find(c => c.id === fat.clienteId);
+                return (
+                  <div
+                    key={fat.id}
+                    className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex items-center justify-between text-xs"
+                  >
+                    <div>
+                      <p className="font-semibold text-slate-800 dark:text-white truncate max-w-[150px]">
+                        {cli?.nomeFantasia || cli?.razaoSocial || 'Cliente'}
+                      </p>
+                      <p className="text-slate-400 text-[11px]">
+                        Vence em {formatarData(fat.dataVencimento)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-900 dark:text-white">
+                        {formatarMoeda(fat.valorBruto)}
+                      </span>
+                      <button
+                        onClick={() => setFaturaParaCobrar(fat)}
+                        className="px-2.5 py-1.5 rounded-lg bg-maker-primary text-white text-[11px] font-bold hover:bg-maker-primaryHover transition-colors flex items-center gap-1 min-h-[36px]"
+                        title="Cobrar via WhatsApp"
+                      >
+                        <Send className="w-3 h-3" /> Cobrar
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900 dark:text-white">
-                      {formatarMoeda(fat.valorBruto)}
-                    </span>
-                    <button
-                      onClick={() => setFaturaParaCobrar(fat)}
-                      className="px-2.5 py-1.5 rounded-lg bg-maker-primary text-white text-[11px] font-bold hover:bg-maker-primaryHover transition-colors flex items-center gap-1 min-h-[36px]"
-                      title="Cobrar via WhatsApp"
-                    >
-                      <Send className="w-3 h-3" /> Cobrar
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -495,56 +540,63 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="space-y-3">
-            {/* Chamado Urgente */}
-            {chamadosUrgentes.map(ch => (
-              <div
-                key={ch.id}
-                onClick={() => navigate('/suporte')}
-                className="p-3 rounded-xl border border-rose-200 dark:border-rose-900/50 bg-rose-50/50 dark:bg-rose-950/20 cursor-pointer hover:border-rose-300 text-xs"
-              >
-                <div className="flex items-center justify-between">
-                  <Badge variant="danger" size="sm">
-                    SLA ALTA (4h)
-                  </Badge>
-                  <span className="text-[11px] font-mono text-rose-600 font-bold">
-                    {ch.numero}
-                  </span>
-                </div>
-                <p className="font-semibold text-slate-800 dark:text-white mt-1.5 truncate">
-                  {ch.assunto}
-                </p>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  Prazo limite: {formatarData(ch.prazoLimite)}
-                </p>
+            {chamadosUrgentes.length === 0 && contratosReajuste.length === 0 ? (
+              <div className="p-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400">
+                <CheckCircle2 className="w-5 h-5 mx-auto mb-1 text-emerald-500" />
+                Nenhuma pendência crítica de SLA ou reajuste contratual pendente.
               </div>
-            ))}
-
-            {/* Contrato para Reajuste Anual */}
-            {contratosReajuste.map(c => {
-              const cli = clientes.find(cl => cl.id === c.clienteId);
-              return (
-                <div
-                  key={c.id}
-                  onClick={() => navigate('/contratos')}
-                  className="p-3 rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-950/20 cursor-pointer hover:border-amber-300 text-xs"
-                >
-                  <div className="flex items-center justify-between">
-                    <Badge variant="warning" size="sm">
-                      Reajuste Anual
-                    </Badge>
-                    <span className="text-[11px] font-mono text-amber-700 font-bold">
-                      {c.numero}
-                    </span>
+            ) : (
+              <>
+                {chamadosUrgentes.map(ch => (
+                  <div
+                    key={ch.id}
+                    onClick={() => navigate('/suporte')}
+                    className="p-3 rounded-xl border border-rose-200 dark:border-rose-900/50 bg-rose-50/50 dark:bg-rose-950/20 cursor-pointer hover:border-rose-300 text-xs"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Badge variant="danger" size="sm">
+                        SLA ALTA (4h)
+                      </Badge>
+                      <span className="text-[11px] font-mono text-rose-600 font-bold">
+                        {ch.numero}
+                      </span>
+                    </div>
+                    <p className="font-semibold text-slate-800 dark:text-white mt-1.5 truncate">
+                      {ch.assunto}
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      Prazo limite: {formatarData(ch.prazoLimite)}
+                    </p>
                   </div>
-                  <p className="font-semibold text-slate-800 dark:text-white mt-1.5 truncate">
-                    {cli?.nomeFantasia} (Aniversário IPCA)
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
-                    Valor atual: {formatarMoeda(c.valorTotal)}
-                  </p>
-                </div>
-              );
-            })}
+                ))}
+
+                {contratosReajuste.map(c => {
+                  const cli = clientes.find(cl => cl.id === c.clienteId);
+                  return (
+                    <div
+                      key={c.id}
+                      onClick={() => navigate('/contratos')}
+                      className="p-3 rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-950/20 cursor-pointer hover:border-amber-300 text-xs"
+                    >
+                      <div className="flex items-center justify-between">
+                        <Badge variant="warning" size="sm">
+                          Reajuste Anual
+                        </Badge>
+                        <span className="text-[11px] font-mono text-amber-700 font-bold">
+                          {c.numero}
+                        </span>
+                      </div>
+                      <p className="font-semibold text-slate-800 dark:text-white mt-1.5 truncate">
+                        {cli?.nomeFantasia} (Aniversário IPCA)
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        Valor atual: {formatarMoeda(c.valorTotal)}
+                      </p>
+                    </div>
+                  );
+                })}
+              </>
+            )}
           </div>
         </div>
       </div>

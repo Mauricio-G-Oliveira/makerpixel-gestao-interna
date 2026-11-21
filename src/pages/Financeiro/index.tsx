@@ -320,9 +320,20 @@ export const FinanceiroPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-maker-border dark:divide-maker-darkBorder">
-                  {faturasCompetencia.map(fat => {
-                    const cli = clientes.find(c => c.id === fat.clienteId);
-                    return (
+                  {faturasCompetencia.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="text-center py-10 text-slate-400">
+                        <Receipt className="w-8 h-8 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
+                        <p className="font-semibold text-slate-700 dark:text-slate-300">Nenhuma fatura nesta competência</p>
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          Quando você cadastrar contratos ativos de mensalidade ou implantação, clique em "Gerar Faturas do Mês" para emitir as cobranças.
+                        </p>
+                      </td>
+                    </tr>
+                  ) : (
+                    faturasCompetencia.map(fat => {
+                      const cli = clientes.find(c => c.id === fat.clienteId);
+                      return (
                       <tr key={fat.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
                         <td className="py-3.5 px-4">
                           <span className="font-bold text-slate-900 dark:text-white font-mono block">
@@ -417,7 +428,7 @@ export const FinanceiroPage: React.FC = () => {
                         </td>
                       </tr>
                     );
-                  })}
+                  }))}
                 </tbody>
               </table>
             </div>
@@ -457,7 +468,18 @@ export const FinanceiroPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-maker-border dark:divide-maker-darkBorder">
-                  {despesasCompetencia.map(d => (
+                  {despesasCompetencia.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="text-center py-10 text-slate-400">
+                        <TrendingDown className="w-8 h-8 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
+                        <p className="font-semibold text-slate-700 dark:text-slate-300">Nenhuma despesa lançada nesta competência</p>
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          Clique em "Nova Despesa" acima para lançar custos operacionais, pró-labores ou tributos.
+                        </p>
+                      </td>
+                    </tr>
+                  ) : (
+                    despesasCompetencia.map(d => (
                     <tr key={d.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
                       <td className="py-3.5 px-4 font-bold text-slate-800 dark:text-white">
                         {d.descricao}
@@ -480,7 +502,7 @@ export const FinanceiroPage: React.FC = () => {
                         </Badge>
                       </td>
                     </tr>
-                  ))}
+                  )))}
                 </tbody>
               </table>
             </div>

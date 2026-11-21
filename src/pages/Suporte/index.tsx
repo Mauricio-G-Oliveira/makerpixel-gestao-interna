@@ -154,9 +154,20 @@ export const SuportePage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-maker-border dark:divide-maker-darkBorder">
-              {chamadosFiltrados.map(ch => {
-                const cli = clientes.find(c => c.id === ch.clienteId);
-                const badgePrio = getBadgePrioridade(ch.prioridade);
+              {chamadosFiltrados.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-12 text-slate-400">
+                    <HeadphonesIcon className="w-8 h-8 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
+                    <p className="font-semibold text-slate-700 dark:text-slate-300">Nenhum chamado de suporte</p>
+                    <p className="text-[11px] text-slate-400 mt-1 max-w-sm mx-auto">
+                      Nenhum ticket de suporte aberto. Todos os clientes e rotinas de conciliação estão operando normalmente.
+                    </p>
+                  </td>
+                </tr>
+              ) : (
+                chamadosFiltrados.map(ch => {
+                  const cli = clientes.find(c => c.id === ch.clienteId);
+                  const badgePrio = getBadgePrioridade(ch.prioridade);
 
                 return (
                   <tr key={ch.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
@@ -218,7 +229,7 @@ export const SuportePage: React.FC = () => {
                     </td>
                   </tr>
                 );
-              })}
+              }))}
             </tbody>
           </table>
         </div>

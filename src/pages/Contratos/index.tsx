@@ -150,7 +150,18 @@ export const ContratosPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-maker-border dark:divide-maker-darkBorder">
-              {contratosFiltrados.map(c => {
+              {contratosFiltrados.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-12 text-slate-400">
+                    <FileText className="w-8 h-8 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
+                    <p className="font-semibold text-slate-700 dark:text-slate-300">Nenhum contrato cadastrado</p>
+                    <p className="text-[11px] text-slate-400 mt-1 max-w-sm mx-auto">
+                      Clique em "Novo Contrato" no topo direito para cadastrar o primeiro contrato de prestação de serviços ou implantação da MakerPixel.
+                    </p>
+                  </td>
+                </tr>
+              ) : (
+                contratosFiltrados.map(c => {
                 const cli = clientes.find(cl => cl.id === c.clienteId);
                 const badge = getBadgeSituacao(c.situacao);
 
@@ -297,7 +308,7 @@ export const ContratosPage: React.FC = () => {
                     </td>
                   </tr>
                 );
-              })}
+              }))}
             </tbody>
           </table>
         </div>

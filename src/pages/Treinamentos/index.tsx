@@ -23,7 +23,7 @@ import { MakerPixelLogo } from '../../components/visual/MakerPixelLogo';
 export const TreinamentosPage: React.FC = () => {
   const { treinamentos, clientes, atualizarPresencaAluno, emitirCertificadoAluno } = useAppData();
 
-  const [turmaSelecionada, setTurmaSelecionada] = useState<TurmaTreinamento>(treinamentos[0]);
+  const [turmaSelecionada, setTurmaSelecionada] = useState<TurmaTreinamento | null>(treinamentos[0] || null);
   const [alunoCertificado, setAlunoCertificado] = useState<{
     aluno: AlunoTreinamento;
     turma: TurmaTreinamento;
@@ -33,6 +33,7 @@ export const TreinamentosPage: React.FC = () => {
   const clienteTurma = clientes.find(c => c.id === turmaAtual?.clienteId);
 
   const handleEmitirCertificado = (aluno: AlunoTreinamento) => {
+    if (!turmaAtual) return;
     // Validação da regra de 75% ou mais
     if (aluno.percentualPresenca < 75) {
       alert(`Certificado Bloqueado: O aluno possui apenas ${aluno.percentualPresenca}% de frequência. A regra exige no mínimo 75% da carga horária.`);
@@ -56,54 +57,69 @@ export const TreinamentosPage: React.FC = () => {
         </div>
 
         {/* Seletor de Turma */}
-        <div className="flex items-center gap-2">
-          <select
-            value={turmaAtual?.id}
-            onChange={e => {
-              const t = treinamentos.find(item => item.id === e.target.value);
-              if (t) setTurmaSelecionada(t);
-            }}
-            className="px-3 py-2 text-xs font-bold rounded-xl border border-maker-border dark:border-maker-darkBorder bg-white dark:bg-maker-darkCard text-slate-800 dark:text-white min-h-[44px]"
-          >
-            {treinamentos.map(t => (
-              <option key={t.id} value={t.id}>
-                {t.tema}
-              </option>
-            ))}
-          </select>
-        </div>
+        {treinamentos.length > 0 && (
+          <div className="flex items-center gap-2">
+            <select
+              value={turmaAtual?.id}
+              onChange={e => {
+                const t = treinamentos.find(item => item.id === e.target.value);
+                if (t) setTurmaSelecionada(t);
+              }}
+              className="px-3 py-2 text-xs font-bold rounded-xl border border-maker-border dark:border-maker-darkBorder bg-white dark:bg-maker-darkCard text-slate-800 dark:text-white min-h-[44px]"
+            >
+              {treinamentos.map(t => (
+                <option key={t.id} value={t.id}>
+                  {t.tema}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
-      {/* Detalhes da Turma Selecionada */}
-      <div className="bg-white dark:bg-maker-darkCard border border-maker-border dark:border-maker-darkBorder rounded-[12px] p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b border-maker-border dark:border-maker-darkBorder">
-          <div>
-            <div className="flex items-center gap-2">
-              <Badge variant="primary" size="sm">
-                {turmaAtual.modalidade}
-              </Badge>
-              <Badge variant="neutral" size="sm">
-                {turmaAtual.tipo === 'CONTRATO' ? 'Incluso no Contrato' : 'Turma Avulsa'}
-              </Badge>
-            </div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-white mt-2">
-              {turmaAtual.tema}
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Cliente: {clienteTurma?.nomeFantasia || 'Turma Aberta'} • {clienteTurma?.cidade}/{clienteTurma?.uf}
-            </p>
+      {!turmaAtual ? (
+        <div className="bg-white dark:bg-maker-darkCard border border-maker-border dark:border-maker-darkBorder rounded-[12px] p-12 text-center shadow-sm">
+          <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4 text-slate-400">
+            <GraduationCap className="w-8 h-8 text-maker-primary" />
           </div>
-
-          <div className="text-right text-xs space-y-1">
-            <span className="text-slate-500 block">
-              <Calendar className="w-3.5 h-3.5 inline mr-1 text-slate-400" />
-              {formatarDataHora(turmaAtual.dataHora)}
-            </span>
-            <span className="text-slate-500 block">
-              <Clock className="w-3.5 h-3.5 inline mr-1 text-slate-400" /> Carga Horária: {turmaAtual.cargaHorariaHoras}h
-            </span>
-          </div>
+          <h2 className="text-base font-bold text-slate-800 dark:text-white">
+            Nenhuma turma de treinamento agendada
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-2">
+            Quando um escritório contábil contratar capacitação técnica ou implantação do <strong>MakerPixel Contábil</strong>, o controle de presença e certificados oficiais de conclusão aparecerão aqui.
+          </p>
         </div>
+      ) : (
+        /* Detalhes da Turma Selecionada */
+        <div className="bg-white dark:bg-maker-darkCard border border-maker-border dark:border-maker-darkBorder rounded-[12px] p-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b border-maker-border dark:border-maker-darkBorder">
+            <div>
+              <div className="flex items-center gap-2">
+                <Badge variant="primary" size="sm">
+                  {turmaAtual.modalidade}
+                </Badge>
+                <Badge variant="neutral" size="sm">
+                  {turmaAtual.tipo === 'CONTRATO' ? 'Incluso no Contrato' : 'Turma Avulsa'}
+                </Badge>
+              </div>
+              <h2 className="text-base font-bold text-slate-900 dark:text-white mt-2">
+                {turmaAtual.tema}
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Cliente: {clienteTurma?.nomeFantasia || 'Turma Aberta'} • {clienteTurma?.cidade}/{clienteTurma?.uf}
+              </p>
+            </div>
+
+            <div className="text-right text-xs space-y-1">
+              <span className="text-slate-500 block">
+                <Calendar className="w-3.5 h-3.5 inline mr-1 text-slate-400" />
+                {formatarDataHora(turmaAtual.dataHora)}
+              </span>
+              <span className="text-slate-500 block">
+                <Clock className="w-3.5 h-3.5 inline mr-1 text-slate-400" /> Carga Horária: {turmaAtual.cargaHorariaHoras}h
+              </span>
+            </div>
+          </div>
 
         {/* Tabela de Alunos / Presença e Emissão de Certificados */}
         <div className="mt-5 space-y-3">
@@ -191,6 +207,7 @@ export const TreinamentosPage: React.FC = () => {
           </div>
         </div>
       </div>
+      )}
 
       {/* MODAL DE CERTIFICADO OFICIAL MAKERPIXEL (IMPRESSÃO / VISUALIZAÇÃO) */}
       {alunoCertificado && (
@@ -234,16 +251,11 @@ export const TreinamentosPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="pt-6 border-t border-slate-200 grid grid-cols-2 gap-8 text-xs text-slate-600">
-                <div>
-                  <div className="w-32 h-0.5 bg-slate-300 mx-auto mb-1" />
-                  <p className="font-bold">Maurício</p>
-                  <p className="text-[10px] text-slate-400">Diretor de Tecnologia • MakerPixel</p>
-                </div>
-                <div>
-                  <div className="w-32 h-0.5 bg-slate-300 mx-auto mb-1" />
-                  <p className="font-bold">Felipe</p>
-                  <p className="text-[10px] text-slate-400">Diretor de Operações • MakerPixel</p>
+              <div className="pt-6 border-t border-slate-200 flex justify-center text-xs text-slate-600">
+                <div className="text-center">
+                  <div className="w-48 h-0.5 bg-slate-300 mx-auto mb-1" />
+                  <p className="font-bold">Maurício G. Oliveira</p>
+                  <p className="text-[10px] text-slate-400">Diretor & Titular Único • MakerPixel</p>
                 </div>
               </div>
 
