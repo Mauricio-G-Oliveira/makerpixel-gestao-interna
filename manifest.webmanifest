@@ -1,0 +1,63 @@
+{
+  "name": "MakerPixel Gestão Interna",
+  "short_name": "MakerPixel",
+  "description": "Sistema de Gestão Interna da MakerPixel - Acesso Exclusivo Titular Único",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0E1726",
+  "theme_color": "#2F5BEA",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "finance"],
+  "icons": [
+    {
+      "src": "./icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512x512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Prospecção",
+      "short_name": "Prospecção",
+      "description": "Fila de prospecção e contatos de Tubarão/SC",
+      "url": "./#/prospeccao",
+      "icons": [{ "src": "./icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Clientes",
+      "short_name": "Clientes",
+      "description": "Carteira de escritórios contábeis parceiros",
+      "url": "./#/clientes",
+      "icons": [{ "src": "./icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Financeiro",
+      "short_name": "Financeiro",
+      "description": "Faturas, despesas e fluxo de caixa",
+      "url": "./#/financeiro",
+      "icons": [{ "src": "./icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
