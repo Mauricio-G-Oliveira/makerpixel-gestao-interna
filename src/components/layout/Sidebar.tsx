@@ -14,6 +14,8 @@ import {
   X,
   ShieldCheck,
   UserCheck,
+  LogOut,
+  Laptop,
 } from 'lucide-react';
 import { MakerPixelLogo } from '../visual/MakerPixelLogo';
 import { useAuth } from '../../store/authContext';
@@ -30,7 +32,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, badgeContagens }) => {
-  const { usuario, isSocio } = useAuth();
+  const { usuario, isSocio, logout, canInstallPWA, isStandalone, instalarPWA } = useAuth();
 
   const menuItems = [
     {
@@ -188,16 +190,35 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, badgeContagen
           })}
         </nav>
 
-        {/* Rodapé do Sidebar: Identificação do Usuário */}
-        <div className="p-3 border-t border-slate-800/80 bg-slate-950/40">
-          <div className="flex items-center gap-3 px-2 py-1.5">
-            <div className="w-9 h-9 rounded-full bg-maker-primary/20 text-maker-primary border border-maker-primary/30 flex items-center justify-center font-bold text-sm">
-              {usuario.nome.charAt(0)}
+        {/* Rodapé do Sidebar: Identificação do Usuário & Sair */}
+        <div className="p-3 border-t border-slate-800/80 bg-slate-950/40 space-y-2">
+          {canInstallPWA && !isStandalone && (
+            <button
+              onClick={instalarPWA}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-maker-primary/20 hover:bg-maker-primary/30 text-maker-primary border border-maker-primary/40 text-xs font-bold transition-all"
+            >
+              <Laptop className="w-4 h-4" /> Instalar App no PC
+            </button>
+          )}
+
+          <div className="flex items-center justify-between px-2 py-1.5">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-full bg-maker-primary/20 text-maker-primary border border-maker-primary/30 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                {usuario.nome.charAt(0)}
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-white truncate">{usuario.nome}</p>
+                <p className="text-[10px] text-slate-400 truncate">{usuario.email}</p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-white truncate">{usuario.nome}</p>
-              <p className="text-[11px] text-slate-400 truncate">{usuario.email}</p>
-            </div>
+
+            <button
+              onClick={logout}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors flex-shrink-0"
+              title="Sair do sistema (Logout)"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </aside>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Sun, Moon, RotateCcw, User, Users } from 'lucide-react';
+import { Menu, Sun, Moon, RotateCcw, User, LogOut, Laptop } from 'lucide-react';
 import { useAuth } from '../../store/authContext';
 
 interface HeaderProps {
@@ -8,7 +8,15 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onOpenSidebar, onResetData }) => {
-  const { usuario, alternarSocio, alternarPerfil, temaEscuro, alternarTema } = useAuth();
+  const {
+    usuario,
+    temaEscuro,
+    alternarTema,
+    logout,
+    canInstallPWA,
+    isStandalone,
+    instalarPWA,
+  } = useAuth();
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-white/90 dark:bg-maker-darkCard/90 backdrop-blur-md border-b border-maker-border dark:border-maker-darkBorder px-4 sm:px-6 flex items-center justify-between">
@@ -34,14 +42,26 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar, onResetData }) =>
 
       {/* Direita: Identificação do Titular Único & Ações */}
       <div className="flex items-center gap-2 sm:gap-3">
+        {/* Botão de Instalar PWA no PC (quando suportado e não instalado) */}
+        {canInstallPWA && !isStandalone && (
+          <button
+            onClick={instalarPWA}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-maker-primary/10 hover:bg-maker-primary/20 text-maker-primary border border-maker-primary/30 text-xs font-bold transition-all"
+            title="Instalar este sistema como aplicativo nativo no seu computador"
+          >
+            <Laptop className="w-3.5 h-3.5" />
+            <span>Instalar no PC</span>
+          </button>
+        )}
+
         {/* Identificação Exclusiva do Titular */}
         <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-            <User className="w-3.5 h-3.5 text-maker-primary" /> Maurício G. Oliveira
+          <span className="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5 truncate max-w-[170px] sm:max-w-none">
+            <User className="w-3.5 h-3.5 text-maker-primary flex-shrink-0" /> {usuario.nome}
           </span>
           <span className="hidden sm:inline-flex text-[10px] uppercase font-bold text-maker-primary bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-900/40">
-            Titular Único (100%)
+            Titular Único
           </span>
         </div>
 
@@ -54,13 +74,22 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar, onResetData }) =>
           {temaEscuro ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
         </button>
 
-        {/* Resetar Dados */}
+        {/* Restaurar Base */}
         <button
           onClick={onResetData}
           className="p-2.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-          title="Restaurar dados iniciais de demonstração"
+          title="Recarregar base de 47 contatos de Tubarão"
         >
           <RotateCcw className="w-4 h-4" />
+        </button>
+
+        {/* Botão Sair (Logout) */}
+        <button
+          onClick={logout}
+          className="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+          title="Sair do sistema (Logout)"
+        >
+          <LogOut className="w-4 h-4" />
         </button>
       </div>
     </header>
